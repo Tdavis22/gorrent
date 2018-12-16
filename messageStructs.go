@@ -15,7 +15,7 @@ type info_dictionary struct {  /* The info on a file and the hashed peices. */
 
 
 type meta_info struct {        /* Holds the metadata on a torrent. */
-    info           info_dictionary
+    info           info_dictionary /* See structure. */
     announce       string      /* The announce URL of the tracker. */
     announce_list  string      /* NOT IMPLEMENTED */
     creation_date  string      /* The creation time of the torrent since the epoch. */
@@ -25,10 +25,10 @@ type meta_info struct {        /* Holds the metadata on a torrent. */
 }
 
 
-type get_req struct {         /* A client makes a get request to the tracker to initiate a download. */
+type get_request struct {     /* A client makes a get request to the tracker to initiate a download. */
     info_hash      string     /* 20-byte SHA1 hash of the value of the info key from meta info. */
     peer_id        string     /* 20-byte string for the unique ID of the client. */
-    port           int        /* Port number the client is listening on. We implemented this as a channel. */
+    port           chan tracker_response /*Channel the client is listening on. */
     uploaded       int        /* Total amount uploaded in bytes. */
     downloaded     int        /* Total amount downloaded in bytes. */
     left           int        /* Number of bytes needed until 100% downloaded. */
@@ -49,7 +49,7 @@ type tracker_response struct {/* The tracker repsonds with a pass or fail, with 
     tracker_id     string     /* String that the client should send back on its next announcements. */
     complete       int        /* Number of peers with the complete file (seeders). */
     incomplete     int        /* Number of peers with an incomplete file (leechers). */
-    peers          []byte     /* We implement the compact form of peerlists. 6 bytes per peer. */
+    peers          []peer     /* We implement the compact form of peerlists. */
 }
 
 
@@ -67,4 +67,12 @@ type other_message struct {   /* Other messages such as keep-alive, interested, 
     message_id     int        /* A number identifier to the type of message. */
     payload        []byte     /* Data. Optional. */
 }
+
+type file_info struct {       /* Used by the tracker to store info on the files. */
+    name           string     /* Name of the file. */
+    peer_list      []peer     /* A slice of who has the file. */
+    num_seeders    int        /* The current number of peers with the complete file. */
+    num_leechers   int        /* The current number of peers with an incomplete file. */
+}
+
 

@@ -69,8 +69,6 @@ func startSimulation() {
 
 
 
-
-
 /* Launches the sim. */
 func main() {
     
