@@ -5,60 +5,63 @@ import (
 	"time"
 )
 
+
 type peer struct {
 	id   string
-	port chan request //change this to whatever type of struct request the peer wants
-
-}
-type response struct {
-	failure_reason  string
-	warning_message string
-	interval        string
-	complete        int
-	incomplete      int
-	peers           []peer
-}
-type request struct {
-	info_hash  string //file name
-	peer_id    string
-	port       chan response
-	uploaded   int  //size of bytes sent(just do size of request struct).
-	downloaded int  //size of bytes receieved(size of response struct).
-	left       int  //bytes left to download
-	compact    bool //compact mode or no
-	no_peer_id bool
-	event      string // can be "started", "completed", "stopped"
-	ip         string
-	numwant    int
-	key        int //unique ID to prove identity
-	trackerid  int
+	port chan get_request //change this to whatever type of struct get_request the peer wants
 }
 type client_info struct {
-	req      request
-	interval int
+	req      get_request
 	t        int
 }
-
-func handle_request(req request, peers map[string][]peer) {
-	req.port <- response{"success", "no warning", "5", 0, 0, peers[req.info_hash]}
+func handle_request(req get_request, who_has map[string][]peer) {
+	req.port <- tracker_response{"success", "", 5, 0, "*_*", num_seeders, num_leechers, 
+                                     who_has[req.info_hash]}
 }
-func tracker_server(recv chan request, exit chan int, peers map[string][]peer) {
+func tracker_server(recv chan get_request, exit chan int, peers map[string][]peer) {
 	ticker := time.NewTicker(5000 * time.Millisecond)
-	t := 0
 	clients := make(map[string]client_info)
 	for range ticker.C {
-		t += 5
 		select {
 		case req := <-recv:
-			temp_client := client_info{req, 5, t}
+			temp_client := client_info{req, t}
 			clients[req.peer_id] = temp_client
 			handle_request(req, peers)
 		case <-exit:
-			fmt.Println("Tracker server closing. ")
+			fmt.Println("Tracker server closing.")
 			return
 		default:
-			fmt.Println("tracker server standby. ")
+			fmt.Println("Tracker server standby.")
 		}
 	}
 
 }
+
+
+
+/* Waits for a get request, sees if the file exists, and returns a response accordingly. */
+func tracker2.0(recv chan get_request, exit chan int, who_has map[string]file_info) {
+    ticker := time.NewTicker(5000 * time.Millisecond)
+    for range ticker.C {
+	select {
+	    case req := <-recv:
+                _,ok := who_has[req.info_hash]
+                if ok {
+	            req.port <- tracker_response{"", "success, file found", 5, 0, "*_*", 
+                                                 who_has[req.info_hash].num_seeders, 
+                                                 who_has[req.info_hash].num_leechers, 
+                                                 who_has[req.info_hash].peers}
+                } else {
+                    req.port <- tracker_response{"File not found", "Request denied", 0,0,"",
+                                                 0,0,nil}
+                }
+	    case <-exit:
+		fmt.Println("Tracker server closing.")
+		return
+	    default:
+	        fmt.Println("Tracker server standby.")
+        }
+    }
+
+}
+
