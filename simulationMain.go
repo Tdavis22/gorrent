@@ -26,7 +26,7 @@
 
 package main
 
-include(
+import (
     "sync"
     "fmt"
 )
@@ -41,16 +41,23 @@ func startSimulation() {
     var num_peers int
     print_mutex := &sync.Mutex{}
 
-
+    
 
     /* Initialize tracker, client, peers and channels. */
+    hs := make(chan handshake)
+    c_2_t := make(chan get_request)
+    t_2_c := make(chan tracker_response)
+
+    file_data := init_file_data()
+
     //TODO wg.Add()
 
     /* Choose a file for each client to download. */
     //TODO e.g. init_client(file1.txt)
 
     /* Start */
-    //TODO go tracker()
+    go tracker(c_2_t,t_2_c,file_data,print_mutex)
+
     
     //TODO go client()
     
@@ -62,9 +69,19 @@ func startSimulation() {
 
 
 
+/* Populates the map with one entry: test1. */
+func init_file_data() map[string]file_info {
+    file_data := make(map[string]file_info)
 
+    var peer1 peer
+    var peer_list []peer
+    peer_list = append(peer_list, peer1)
 
+    torrent := file_info{"test1",peer_list,0,0}
+    file_data["test1"] = torrent
 
+    return file_data
+}
 
 
 

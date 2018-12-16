@@ -75,4 +75,9 @@ type file_info struct {       /* Used by the tracker to store info on the files.
     num_leechers   int        /* The current number of peers with an incomplete file. */
 }
 
+type peer struct {            /* Holds the data associated with a peer. */
+	id         strin      /* Identifier */
+	port       chan message /* Channel that the clien talks to. */
+}
+
 
