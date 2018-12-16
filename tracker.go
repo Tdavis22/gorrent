@@ -6,6 +6,7 @@ import (
 )
 
 
+/* Staged for deletion. Replaced by tracker2.0
 type peer struct {
 	id   string
 	port chan get_request //change this to whatever type of struct get_request the peer wants
@@ -36,7 +37,7 @@ func tracker_server(recv chan get_request, exit chan int, peers map[string][]pee
 	}
 
 }
-
+*/
 
 
 /* Waits for a get request, sees if the file exists, and returns a response accordingly. */
