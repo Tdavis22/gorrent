@@ -3,11 +3,20 @@ package main
 import (
 	"os"
 	"time"
+        "fmt"
 )
 
 //PIECE = 1
 //REQUEST = 2
 
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+/* Waits for a request message from a client, then sends them their chunk of the data. */
 func peer_server(files []string, recv chan other_message) {
 	file_pointers := make(map[string]*os.File)
 	//initialize files
@@ -18,13 +27,10 @@ func peer_server(files []string, recv chan other_message) {
 		file_pointers[filename] = f
 	}
 	for range ticker.C {
-		//doesnt work needs a default case
 		select {
-		//im just going to use length as offset for now..
+		// Use length as offset
 		case msg := <-recv:
 			if msg.message_id == 2 {
-				//filename field has to be added to other_message struct
-				//also gonna need a port to send this data back to?
 				filename := msg.file_name
 				fp := file_pointers[filename]
 				fp.Seek(int64(msg.offset), 0)

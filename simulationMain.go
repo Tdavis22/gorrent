@@ -39,39 +39,29 @@ func startSimulation() {
 	print_mutex := &sync.Mutex{}
 
 	/* Initialize tracker, client, peers and channels. */
-	//hs := make(chan handshake)
 
 	/* For tracker requests. */
 	c_2_t := make(chan get_request)
 	stop := make(chan int)
-	//t_2_c := make(chan tracker_response)
 
 	/* For peer communications. */
-	//p0_2_c := make(chan other_message)
 	c_2_p0 := make(chan other_message)
-	//p1_2_c := make(chan other_message)
 	c_2_p1 := make(chan other_message)
-	//p2_2_c := make(chan other_message)
 	c_2_p2 := make(chan other_message)
-	//p3_2_c := make(chan other_message)
 	c_2_p3 := make(chan other_message)
 
-	/* Group up the peers. */
+	/* Group up the peers and give the tracker some files to manage. */
 	peer_com := []peer{peer{"0", c_2_p0}, peer{"1", c_2_p1},
 		peer{"2", c_2_p2}, peer{"3", c_2_p3}}
 	file_data := init_file_data(peer_com)
 
-	/* Choose a file for each client to download. */
-	//TODO e.g. init_client(file1.txt)
-
-	/* Start */
-	go tracker(c_2_t, stop, file_data, print_mutex)
+	/* Start the goroutines */
+	go tracker_server(c_2_t, stop, file_data, print_mutex)
 
 	go client_server("test1", c_2_t)
-	//TODO go client()
 
 	for i := 0; i < num_peers; i++ {
-		//TODO go peer()
+		go peer_server([]string{"test1"}, c_2_p0)
 	}
 	wg.Add(2 + num_peers)
 }

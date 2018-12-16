@@ -9,7 +9,7 @@ import (
 
 
 /* Waits for a get request, sees if the file exists, and returns a response accordingly. */
-func tracker(recv chan get_request, exit chan int, who_has map[string]file_info,print_mutex *sync.Mutex) {
+func tracker_server(recv chan get_request, exit chan int, who_has map[string]file_info,print_mutex *sync.Mutex) {
     ticker := time.NewTicker(5000 * time.Millisecond)
     for range ticker.C {
 	select {
