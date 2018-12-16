@@ -37,7 +37,8 @@ func peer_server(files []string, recv chan other_message) {
 				fmt.Printf("%+v", ret)
 				msg.port <- ret
 			}
-
+                default:
+                        fmt.Printf("")
 		}
 	}
 }
