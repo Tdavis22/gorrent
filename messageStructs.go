@@ -76,8 +76,8 @@ type file_info struct {       /* Used by the tracker to store info on the files.
 }
 
 type peer struct {            /* Holds the data associated with a peer. */
-	id         strin      /* Identifier */
-	port       chan message /* Channel that the clien talks to. */
+	id         string     /* Identifier */
+	port       chan other_message /* Channel that the clien talks to. */
 }
 
 
