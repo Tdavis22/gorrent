@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 )
@@ -33,8 +32,7 @@ func peer_server(files []string, recv chan other_message) {
 				_, err := fp.Read(b1)
 				check(err)
 				//send b1(512 bytes) back to client aka construct new other message
-				ret := other_message{512, 1, b1, filename, nil}
-				fmt.Printf("%+v", ret)
+				ret := other_message{msg.offset, 1, b1, filename, nil}
 				msg.port <- ret
 			}
                 default:
