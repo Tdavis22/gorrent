@@ -7,7 +7,6 @@ import (
 
 
 
-
 /* Waits for a get request, sees if the file exists, and returns a response accordingly. */
 func tracker(recv chan get_request, exit chan int, who_has map[string]file_info) {
     ticker := time.NewTicker(5000 * time.Millisecond)
@@ -31,6 +30,4 @@ func tracker(recv chan get_request, exit chan int, who_has map[string]file_info)
 	        fmt.Println("Tracker server standby.")
         }
     }
-
 }
-
