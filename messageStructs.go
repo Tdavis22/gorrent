@@ -26,7 +26,7 @@ type meta_info struct {        /* Holds the metadata on a torrent. */
 
 
 type get_req struct {         /* A client makes a get request to the tracker to initiate a download. */
-    info_hash      [20]byte   /* 20-byte SHA1 hash of the value of the info key from meta info. */
+    info_hash      string     /* 20-byte SHA1 hash of the value of the info key from meta info. */
     peer_id        string     /* 20-byte string for the unique ID of the client. */
     port           int        /* Port number the client is listening on. We implemented this as a channel. */
     uploaded       int        /* Total amount uploaded in bytes. */
@@ -54,17 +54,17 @@ type tracker_response struct {/* The tracker repsonds with a pass or fail, with 
 
 
 type handshake struct {       /* A handshake is required to be the first messag sent by the client. */
-    pstrlen        byte       /* Lenth of pstr. Max 255. 19 for BitTorrent. */
+    pstrlen        string     /* Lenth of pstr. Max 255. 19 for BitTorrent. */
     pstr           string     /* String identifier of the protocol. "BitTorrent protocol" */
     reserved       [8]byte    /* Reserved for future implementations. */
-    info_hash      [20]byte   /* SHA1 hash of the info key in the metainfo file. Same as tracker requests. */
+    info_hash      string     /* SHA1 hash of the info key in the metainfo file. Same as tracker requests. */
     peer_id        string     /* Unique ID for the client. Our implementation follows the Azureus-style encoding. */
 }
 
 
 type other_message struct {   /* Other messages such as keep-alive, interested, have, request, piece, and cancel. */
     length         int        /* Length of the following data. */
-    message_id     byte       /* A single byte as an identifier to the type of message. */
+    message_id     int        /* A number identifier to the type of message. */
     payload        []byte     /* Data. Optional. */
 }
 
