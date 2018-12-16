@@ -35,7 +35,8 @@ func peer_server(files []string, recv chan other_message) {
 				ret := other_message{msg.offset, 1, b1, filename, nil}
 				msg.port <- ret
 			}
-
+                default:
+                        fmt.Printf("")
 		}
 	}
 }
