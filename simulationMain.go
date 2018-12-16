@@ -60,9 +60,14 @@ func startSimulation() {
 
 	go client_server("test1", c_2_t)
 
-	for i := 0; i < num_peers; i++ {
-		go peer_server([]string{"test1"}, c_2_p0)
-	}
+	str := make([]string, 1)
+	str[0] = "test1"
+
+	peer_server(str, c_2_p0)
+	peer_server(str, c_2_p1)
+	peer_server(str, c_2_p2)
+	peer_server(str, c_2_p3)
+
 	wg.Add(2 + num_peers)
 }
 
