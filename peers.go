@@ -8,11 +8,8 @@ import (
 
 //PIECE = 1
 //REQUEST = 2
-//CANCEL = 3
-// HAVE = 4
-// INTERESTED = 5
-// KEEP-ALIVE = 6
-func peer_server(files []string, recv chan other_message, connect chan handshake) {
+
+func peer_server(files []string, recv chan other_message) {
 	file_pointers := make(map[string]*os.File)
 	//initialize files
 	ticker := time.NewTicker(5000 * time.Millisecond)
@@ -29,16 +26,16 @@ func peer_server(files []string, recv chan other_message, connect chan handshake
 			if msg.message_id == 2 {
 				//filename field has to be added to other_message struct
 				//also gonna need a port to send this data back to?
-				filename := "file1.txt"
+				filename := msg.file_name
 				fp := file_pointers[filename]
-				fp.Seek(int64(msg.length), 0)
+				fp.Seek(int64(msg.offset), 0)
 				b1 := make([]byte, 512)
-				numBytesRead, err := fp.Read(b1)
+				_, err := fp.Read(b1)
 				check(err)
-				print(numBytesRead)
 				//send b1(512 bytes) back to client aka construct new other message
-				ret := other_message{512, 1, b1}
+				ret := other_message{512, 1, b1, filename, nil}
 				fmt.Printf("%+v", ret)
+				msg.port <- ret
 			}
 
 		}
